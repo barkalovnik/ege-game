@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="page-type" content="software">
+  <meta name="site-kind" content="software">
+  <title>КЕГЭ Информатика — Банк базовых прототипов (Тренажёр)</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Верхняя панель: Бренд, статистика и элементы управления -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <span class="brand-badge">КЕГЭ</span>
+        <div>
+          <div class="brand-title">Базовые прототипы 1–27</div>
+          <div class="brand-subtitle">Интерактивный тренажёр по информатике</div>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="stat-pill">
+          <span class="stat-label">Решено</span>
+          <span class="stat-val accent" id="stat-solved-count">0/27</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Первичный балл</span>
+          <span class="stat-val" id="stat-primary-score">0 б.</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Точность</span>
+          <span class="stat-val" id="stat-accuracy">0%</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Время</span>
+          <span class="stat-val" id="session-timer">00:00</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="theme-toggle-btn" class="btn btn-subtle" title="Сменить цветовую тему">Светлая тема</button>
+        <button id="reset-progress-btn" class="btn btn-subtle" title="Сбросить все введённые ответы">Сброс</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Лента быстрой навигации по номерам заданий (1-27) -->
+  <nav class="tasks-strip-section" aria-label="Список заданий">
+    <div class="strip-container">
+      <div class="strip-grid" id="tasks-strip">
+        <!-- Генерируется из tasks-data.js -->
+      </div>
+    </div>
+  </nav>
+
+  <!-- Основное рабочее пространство (Двухколоночный верстак) -->
+  <main class="main-content">
+    <div class="workbench-layout">
+
+      <!-- Левая колонка: Условие и оригинальный скриншот -->
+      <section class="task-view-card" aria-label="Условие задачи">
+        <div class="task-card-header">
+          <div class="task-meta-left">
+            <span class="task-number-tag" id="task-header-type">Задание 1</span>
+            <span class="task-topic-badge" id="task-header-topic">Графы и таблицы</span>
+            <span class="task-id-badge" id="task-header-id">№ 9354</span>
+          </div>
+          <div class="task-meta-right">
+            <span class="task-topic-badge" id="task-points">1 балл</span>
+            <button id="task-flag-btn" class="btn btn-subtle btn-icon" title="Отметить флажком (клавиша F)">☆ Запомнить</button>
+          </div>
+        </div>
+
+        <div class="task-card-body">
+          <!-- Скриншот из реального варианта с возможностью увеличения -->
+          <div class="task-image-box" title="Нажмите для увеличения скриншота">
+            <img id="task-screenshot" class="task-img" src="" alt="Скриншот задания">
+            <div class="image-zoom-overlay-hint">Увеличить 🔍</div>
+          </div>
+
+          <!-- Текст условия для удобного чтения и копирования -->
+          <div class="task-statement" id="task-statement-text">
+            Загрузка текста задания...
+          </div>
+        </div>
+      </section>
+
+      <!-- Правая колонка: Поле ввода, инструменты и решение -->
+      <aside class="desk-column" aria-label="Панель решения">
+        
+        <!-- Блок ввода ответа -->
+        <div class="desk-card">
+          <div class="desk-section-title">
+            <span>Ввод ответа</span>
+            <span id="answer-format-hint" class="input-hint-text">Целое число</span>
+          </div>
+
+          <div class="answer-box">
+            <div class="input-row">
+              <input 
+                type="text" 
+                id="user-answer-input" 
+                class="answer-input" 
+                placeholder="Ваш ответ..." 
+                autocomplete="off"
+                spellcheck="false"
+              >
+              <button id="submit-answer-btn" class="btn btn-primary">Проверить</button>
+            </div>
+
+            <!-- Баннер результата -->
+            <div id="answer-result-box" class="result-banner hidden"></div>
+          </div>
+        </div>
+
+        <!-- Мини-калькулятор / математический вычислитель -->
+        <div class="tools-accordion">
+          <div class="accordion-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+            <span>Калькулятор выражений и систем счисления</span>
+            <span style="font-size: 11px; color: var(--text-muted);">Развернуть ▾</span>
+          </div>
+          <div class="accordion-content hidden">
+            <input 
+              type="text" 
+              id="calc-input" 
+              class="calc-input" 
+              placeholder="Пример: 2**14 / 1024 или 165615 / 61 или 14 & 5"
+            >
+            <div id="calc-output" class="calc-output">Результат...</div>
+          </div>
+        </div>
+
+        <!-- Личный черновик / заметки к текущему заданию -->
+        <div class="desk-card" style="padding: 16px 20px;">
+          <div class="desk-section-title">
+            <span>Черновик к этому номеру</span>
+            <span style="font-size: 11px; color: var(--text-muted);">Автосохранение</span>
+          </div>
+          <textarea 
+            id="task-notes-input" 
+            class="notes-textarea" 
+            placeholder="Запишите промежуточные числа, формулы или логику..."
+          ></textarea>
+        </div>
+
+        <!-- Разбор и подсказка -->
+        <div class="solution-drawer">
+          <button id="toggle-solution-btn" class="solution-toggle-btn">
+            <span>Подсказка и эталонный разбор</span>
+            <span>↓</span>
+          </button>
+          <div id="solution-content-wrapper" class="solution-content hidden">
+            <div style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle);">
+              <strong style="color: var(--accent);">Подсказка:</strong>
+              <div id="task-hint-text" style="margin-top: 4px; color: var(--text-secondary);"></div>
+            </div>
+            <div>
+              <strong style="color: var(--accent);">Пошаговое решение и код:</strong>
+              <div id="task-solution-text" style="margin-top: 8px;"></div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+
+    <!-- Нижняя панель навигации и горячих клавиш -->
+    <footer class="workbench-footer">
+      <div class="keyboard-hints">
+        <span><kbd class="kbd">Enter</kbd> Проверить</span>
+        <span><kbd class="kbd">[</kbd> / <kbd class="kbd">←</kbd> Пред.</span>
+        <span><kbd class="kbd">]</kbd> / <kbd class="kbd">→</kbd> След.</span>
+        <span><kbd class="kbd">F</kbd> Избранное</span>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button id="btn-prev-task" class="btn">← Предыдущее</button>
+        <button id="btn-next-task" class="btn btn-primary">Следующее →</button>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Модальное окно для полноразмерного просмотра скриншота -->
+  <div id="image-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Просмотр скриншота">
+    <div class="modal-image-wrapper">
+      <button id="modal-close-btn" class="modal-close-btn" title="Закрыть (Esc)">✕</button>
+      <img id="modal-screenshot" class="modal-img" src="" alt="Полноразмерный скриншот">
+    </div>
+  </div>
+
+  <!-- Скрипты -->
+  <script src="tasks-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
